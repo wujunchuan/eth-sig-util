@@ -4,7 +4,6 @@ import * as nacl from 'tweetnacl';
 import * as naclUtil from 'tweetnacl-util';
 
 export type TypedData = string | EIP712TypedData | EIP712TypedData[];
-
 interface EIP712TypedData {
   name: string;
   type: string;
@@ -296,6 +295,7 @@ function normalize (input: number | string): string {
   return ethUtil.addHexPrefix(input.toLowerCase());
 }
 
+/** Personal sign */
 function personalSign<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const message = ethUtil.toBuffer(msgParams.data);
   const msgHash = ethUtil.hashPersonalMessage(message);
@@ -304,7 +304,9 @@ function personalSign<T extends MessageTypes> (privateKey: Buffer, msgParams: Ms
   return serialized;
 }
 
+/** Recover Personal sign */
 function recoverPersonalSignature<T extends MessageTypes> (msgParams: SignedMsgParams<TypedData | TypedMessage<T>>): string {
+  console.log(msgParams);
   const publicKey = getPublicKeyFor(msgParams);
   const sender = ethUtil.publicToAddress(publicKey);
   const senderHex = ethUtil.bufferToHex(sender);
@@ -321,6 +323,7 @@ function externalTypedSignatureHash (typedData: EIP712TypedData[]): string {
   return ethUtil.bufferToHex(hashBuffer);
 }
 
+/** V1 signTypeData */
 function signTypedDataLegacy<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const msgHash = typedSignatureHash(msgParams.data);
   const sig = ethUtil.ecsign(msgHash, privateKey);
@@ -484,12 +487,14 @@ function recoverTypedMessage<T extends MessageTypes> (msgParams: SignedMsgParams
   }
 }
 
+/** V3 signTypedData */
 function signTypedData<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const message = TypedDataUtils.sign(msgParams.data, false);
   const sig = ethUtil.ecsign(message, privateKey);
   return ethUtil.bufferToHex(concatSig(sig.v, sig.r, sig.s));
 }
 
+/** V4 signTypedData */
 function signTypedData_v4<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const message = TypedDataUtils.sign(msgParams.data);
   const sig = ethUtil.ecsign(message, privateKey);

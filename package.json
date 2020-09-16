@@ -9,6 +9,7 @@
     "utils/"
   ],
   "scripts": {
+    "dev": "nodemon --watch utils --watch test --watch index.ts --exec ts-node ./test/index.ts",
     "build": "tsc --project .",
     "lint": "eslint . --ext .ts,.js",
     "test": "yarn build && node test/index.js",
