@@ -326,6 +326,10 @@ function externalTypedSignatureHash (typedData: EIP712TypedData[]): string {
 /** V1 signTypeData */
 function signTypedDataLegacy<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const msgHash = typedSignatureHash(msgParams.data);
+  console.log('signTypedData_v1---------');
+  console.log(msgHash);
+  console.log('signTypedData_v1---------');
+
   const sig = ethUtil.ecsign(msgHash, privateKey);
   return ethUtil.bufferToHex(concatSig(sig.v, sig.r, sig.s));
 }
@@ -490,6 +494,10 @@ function recoverTypedMessage<T extends MessageTypes> (msgParams: SignedMsgParams
 /** V3 signTypedData */
 function signTypedData<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const message = TypedDataUtils.sign(msgParams.data, false);
+  console.log('signTypedData_v3---------');
+  console.log(message);
+  console.log('signTypedData_v3---------');
+
   const sig = ethUtil.ecsign(message, privateKey);
   return ethUtil.bufferToHex(concatSig(sig.v, sig.r, sig.s));
 }
@@ -497,6 +505,10 @@ function signTypedData<T extends MessageTypes> (privateKey: Buffer, msgParams: M
 /** V4 signTypedData */
 function signTypedData_v4<T extends MessageTypes> (privateKey: Buffer, msgParams: MsgParams<TypedData | TypedMessage<T>>): string {
   const message = TypedDataUtils.sign(msgParams.data);
+  console.log('signTypedData_v4---------');
+  console.log(message);
+  console.log('signTypedData_v4---------');
+
   const sig = ethUtil.ecsign(message, privateKey);
   return ethUtil.bufferToHex(concatSig(sig.v, sig.r, sig.s));
 }
